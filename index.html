@@ -4,153 +4,262 @@
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Absensi X4J_AOK</title>
+  <title>Absensi X4J_AOK - Final Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-color: #800000;
-      --bg-color: #f4f7f6;
+      --primary: #ff4d4d;
+      --primary-hover: #ff1a1a;
+      --bg-body: #0f172a;
+      --bg-box: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #334155;
+      --border-color: #475569;
+      --status-red: #ef4444;
     }
 
     body { 
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      background: var(--bg-color); 
+      font-family: 'Poppins', sans-serif; 
+      display: flex; justify-content: center; align-items: center; 
+      min-height: 100vh; margin: 0; 
+      background: var(--bg-body);
+      background-image: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+      padding: 20px; 
+      color: var(--text-main);
+      overflow-x: hidden;
     }
 
     .box { 
-      background: white; 
-      padding: 30px 25px; 
-      border-radius: 15px; 
-      width: 90%; 
-      max-width: 350px; 
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+      background: var(--bg-box); 
+      padding: 40px; 
+      border-radius: 20px;
+      width: 100%; 
+      max-width: 400px; 
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+      border: 1px solid var(--border-color);
+      z-index: 10;
     }
 
-    h3 { 
-      color: var(--primary-color); 
-      text-align: center; 
-      margin-top: 0;
-      margin-bottom: 25px;
-      font-size: 1.5rem;
-      border-bottom: 2px solid var(--primary-color);
-      padding-bottom: 10px;
+    .box::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #800000, var(--primary));
+      border-radius: 20px 20px 0 0;
     }
 
-    label {
-      font-size: 0.9rem;
-      color: #555;
-      font-weight: bold;
-      display: block;
-      margin-bottom: 5px;
-    }
-
+    h3 { color: var(--text-main); text-align: left; margin: 10px 0 8px; font-size: 1.5rem; font-weight: 800; }
+    h3 span { color: var(--primary); }
+    .subtitle { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 30px; display: block; }
+    
+    label { font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 8px; }
     input, select { 
-      width: 100%; 
-      padding: 12px; 
-      margin-bottom: 18px; 
-      border: 1px solid #ddd; 
-      border-radius: 8px; 
-      box-sizing: border-box; 
-      font-size: 16px; /* Mencegah auto-zoom di iPhone */
-      transition: border-color 0.3s;
+      width: 100%; padding: 12px 16px; border: 1.5px solid var(--border-color); border-radius: 10px; 
+      box-sizing: border-box; font-size: 0.95rem; background: var(--input-bg);
+      color: white; font-family: 'Poppins'; transition: all 0.3s ease;
     }
 
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--primary-color);
-    }
-
+    input:focus, select:focus { outline: none; border-color: var(--primary); background: #1e293b; box-shadow: 0 0 0 4px rgba(255, 77, 77, 0.2); }
     button { 
-      width: 100%; 
-      padding: 14px; 
-      background: var(--primary-color); 
-      color: white; 
-      border: none; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      font-size: 16px; 
-      font-weight: bold; 
-      transition: transform 0.2s, background 0.3s;
+      width: 100%; padding: 14px; background: #800000; color: white; border: none; 
+      border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 600; 
+      margin-top: 10px; transition: all 0.3s ease; 
+    }
+    button:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+
+    #m-screen {
+      position: fixed; inset: 0; z-index: 9999; background: #020617;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; visibility: hidden; opacity: 0; transition: opacity 0.4s ease-out;
     }
 
-    button:active {
-      transform: scale(0.98);
+    #m-screen.show { visibility: visible; opacity: 1; }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 10px 22px; border-radius: 9999px; margin-bottom: 2.5rem;
+      background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25);
     }
 
-    button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
+    .dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--status-red); position: relative; }
+    .dot::after {
+      content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%;
+      background-color: var(--status-red); animation: live-pulse 2.5s infinite;
     }
 
-    #pesan { 
-      margin-top: 20px; 
-      font-size: 0.95rem;
-      font-weight: 500;
+    @keyframes live-pulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(4.5); opacity: 0; } }
+
+    .m-title { 
+      font-size: clamp(32px, 8vw, 64px); font-weight: 800; 
+      letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 2rem;
+      color: var(--status-red);
     }
 
-    /* Animasi sederhana */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    #m-text { font-size: clamp(16px, 4vw, 22px); color: #94a3b8; max-width: 650px; margin-bottom: 3rem; }
+    .eta-box { padding-top: 2rem; border-top: 1px solid #1e293b; display: flex; flex-direction: column; gap: 8px; }
+    #m-eta { color: white; font-weight: 700; font-size: 1.5rem; }
 
-    .box { animation: fadeIn 0.5s ease-out; }
+    #pesan { margin-top: 20px; font-weight: 500; text-align: center; font-size: 0.9rem; padding: 12px; border-radius: 10px; line-height: 1.4; }
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   </style>
 </head>
 <body>
 
-<div class="box">
-  <h3>Form Absensi</h3>
-  <form id="formGue">
-    <label>Nama Lengkap</label>
-    <input type="text" name="konten" placeholder="Masukkan Nama" required>
-    
-    <label>NPM</label>
-    <input type="number" name="npm" placeholder="Masukkan NPM" required inputmode="numeric">
-    
-    <label>Status</label>
-    <select name="status" required>
-      <option value="Hadir">Hadir</option>
-      <option value="Tidak Hadir">Tidak Hadir</option>
-      <option value="Sakit">Sakit</option>
-      <option value="Izin">Izin</option>
-    </select>
-    
-    <button type="submit" id="tombol">Kirim Presensi</button>
-  </form>
-  <p id="pesan" style="text-align:center"></p>
+<div id="main-app" class="box">
+  <h3>E-Absensi <span>X4J</span></h3>
+  <div id="kontenAbsen">
+    <span class="subtitle">Silakan isi data kehadiran Anda di bawah ini.</span>
+    <form id="formGue">
+      <div style="margin-bottom: 20px;">
+        <label>Nama Lengkap</label>
+        <input type="text" name="konten" placeholder="Nama sesuai KTM" required>
+      </div>
+      <div style="margin-bottom: 20px;">
+        <label>NPM</label>
+        <input type="number" name="npm" placeholder="Contoh: 20224350123" required inputmode="numeric">
+      </div>
+      <div style="margin-bottom: 20px;">
+        <label>Status</label>
+        <select name="status" required>
+          <option value="" disabled selected>Pilih kehadiran</option>
+          <option value="Hadir">Hadir</option>
+          <option value="Tidak Hadir">Tidak Hadir</option>
+          <option value="Sakit">Sakit</option>
+          <option value="Izin">Izin</option>
+        </select>
+      </div>
+      <button type="submit" id="tombol">Kirim Presensi</button>
+    </form>
+  </div>
+  <div id="pesan" style="display: none;"></div>
+</div>
+
+<div id="m-screen">
+  <div class="m-content" style="max-width: 800px; width: 100%;">
+    <div class="status-pill">
+      <span class="dot"></span>
+      <span style="color: #ef4444; font-weight: 800; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;">System Locked</span>
+    </div>
+    <h1 class="m-title">Presensi Telah<br>Berakhir.</h1>
+    <p id="m-text">
+      Maaf, batas waktu absensi hari <span id="namaHari" style="color: white; font-weight: 800;">...</span> jam 10.00 WIB sudah terlewati.
+    </p>
+    <div class="eta-box">
+      <span style="color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3em; font-weight: 800;">Dibuka Kembali</span>
+      <span id="m-eta">Memuat Jadwal...</span>
+    </div>
+  </div>
 </div>
 
 <script>
+  const mainApp = document.getElementById('main-app');
+  const mScreen = document.getElementById('m-screen');
   const form = document.getElementById('formGue');
   const btn = document.getElementById('tombol');
   const msg = document.getElementById('pesan');
+  const teksHari = document.getElementById('namaHari');
+  const mEta = document.getElementById('m-eta');
 
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbxA_vGc1qmJlx33c3YLA2ikqfqNtgETSW2_rzhgn_jruyxhexywhQC6WEsowlIqII1a/exec';
+  // --- MODE TESTER (Set ke false jika sudah selesai testing) ---
+  const modeTester = true; 
+
+  function cekWaktu() {
+    if (modeTester) {
+      if (mScreen.classList.contains('show')) {
+        mScreen.classList.remove('show');
+        mainApp.style.display = 'block';
+      }
+      return true;
+    }
+
+    const sekarang = new Date();
+    const hari = sekarang.getDay(); 
+    const tglSekarang = sekarang.toISOString().split('T')[0];
+    const totalMenitSekarang = (sekarang.getHours() * 60) + sekarang.getMinutes();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('admin') === 'true') {
+      if (mScreen.classList.contains('show')) {
+        mScreen.classList.remove('show');
+        mainApp.style.display = 'block';
+      }
+      return true; 
+    }
+
+    const menitBuka = 450; // 07.30
+    const menitTutup = 600; // 10.00
+    const jadwalMingguMei = ["2026-05-03", "2026-05-10", "2026-05-17", "2026-05-24"];
+    
+    const isJadwalHariIni = (hari === 6 || jadwalMingguMei.includes(tglSekarang));
+    const isOperationalTime = (totalMenitSekarang >= menitBuka && totalMenitSekarang < menitTutup);
+
+    if (!isJadwalHariIni || !isOperationalTime) {
+        const listHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        teksHari.innerText = listHari[hari];
+
+        if (hari >= 1 && hari <= 5) {
+          mEta.innerText = "Sabtu Pagi, Jam 07.30 WIB";
+        } else if (hari === 6) {
+          const besok = new Date(sekarang);
+          besok.setDate(sekarang.getDate() + 1);
+          const tglBesok = besok.toISOString().split('T')[0];
+          mEta.innerText = jadwalMingguMei.includes(tglBesok) ? "Minggu Pagi, Jam 07.30 WIB" : "Sabtu Pagi, Jam 07.30 WIB";
+        } else {
+          mEta.innerText = "Sabtu Pagi, Jam 07.30 WIB";
+        }
+
+        if (!mScreen.classList.contains('show')) {
+          mScreen.classList.add('show');
+          mainApp.style.display = 'none';
+        }
+        return false;
+    }
+
+    if (mScreen.classList.contains('show')) {
+      mScreen.classList.remove('show');
+      mainApp.style.display = 'block';
+    }
+    return true;
+  }
+
+  function loop() { cekWaktu(); requestAnimationFrame(loop); }
+  setInterval(cekWaktu, 1000); 
+  loop(); 
+
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbxfwmm4DTOh_7l9shx3LHLGZYAUzN06Gco7N-98PQbEyTYLixaIl0XOCt_Z64rGpcEk/exec';
 
   form.addEventListener('submit', e => {
     e.preventDefault();
+    if (!cekWaktu()) return;
     btn.disabled = true;
-    btn.innerText = "Sedang Mengirim...";
-    msg.innerText = "";
+    btn.innerText = "Mengirim...";
+    msg.style.display = "none";
     
-    fetch(scriptURL, { 
-      method: 'POST', 
-      body: new FormData(form)
+    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+    .then(response => response.text()) // Baca teks balasan dari server
+    .then(hasil => {
+      msg.style.display = "block";
+      
+      if (hasil.includes("Berhasil")) {
+        msg.style.background = "rgba(34, 197, 94, 0.2)";
+        msg.style.color = "#4ade80";
+        msg.innerText = "✅ Presensi berhasil dikirim!";
+        form.reset();
+      } else {
+        // Tampilkan pesan penolakan dari Google Apps Script
+        msg.style.background = "rgba(239, 68, 68, 0.2)";
+        msg.style.color = "#f87171";
+        msg.innerText = "⚠️ " + hasil;
+      }
     })
-    .then(response => {
-      msg.innerText = "✅ Berhasil! Data terkirim.";
-      msg.style.color = "green";
-      form.reset();
-    })
-    .catch(error => {
-      msg.innerText = "❌ Gagal terkirim!";
-      msg.style.color = "red";
-      console.error('Error!', error.message);
+    .catch(() => {
+      msg.style.display = "block";
+      msg.style.background = "rgba(239, 68, 68, 0.2)";
+      msg.style.color = "#f87171";
+      msg.innerText = "❌ Terjadi kesalahan koneksi!";
     })
     .finally(() => {
       btn.disabled = false;
@@ -158,6 +267,5 @@
     });
   });
 </script>
-
 </body>
 </html>
