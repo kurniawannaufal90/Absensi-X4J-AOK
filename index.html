@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Absensi X4J_AOK</title>
+  <style>
+    :root {
+      --primary-color: #800000;
+      --bg-color: #f4f7f6;
+    }
+
+    body { 
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: var(--bg-color); 
+    }
+
+    .box { 
+      background: white; 
+      padding: 30px 25px; 
+      border-radius: 15px; 
+      width: 90%; 
+      max-width: 350px; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+    }
+
+    h3 { 
+      color: var(--primary-color); 
+      text-align: center; 
+      margin-top: 0;
+      margin-bottom: 25px;
+      font-size: 1.5rem;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: #555;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input, select { 
+      width: 100%; 
+      padding: 12px; 
+      margin-bottom: 18px; 
+      border: 1px solid #ddd; 
+      border-radius: 8px; 
+      box-sizing: border-box; 
+      font-size: 16px; /* Mencegah auto-zoom di iPhone */
+      transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    button { 
+      width: 100%; 
+      padding: 14px; 
+      background: var(--primary-color); 
+      color: white; 
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      font-size: 16px; 
+      font-weight: bold; 
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    #pesan { 
+      margin-top: 20px; 
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    /* Animasi sederhana */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .box { animation: fadeIn 0.5s ease-out; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h3>Form Absensi</h3>
+  <form id="formGue">
+    <label>Nama Lengkap</label>
+    <input type="text" name="konten" placeholder="Masukkan Nama" required>
+    
+    <label>NPM</label>
+    <input type="number" name="npm" placeholder="Masukkan NPM" required inputmode="numeric">
+    
+    <label>Status</label>
+    <select name="status" required>
+      <option value="Hadir">Hadir</option>
+      <option value="Tidak Hadir">Tidak Hadir</option>
+      <option value="Sakit">Sakit</option>
+      <option value="Izin">Izin</option>
+    </select>
+    
+    <button type="submit" id="tombol">Kirim Presensi</button>
+  </form>
+  <p id="pesan" style="text-align:center"></p>
+</div>
+
+<script>
+  const form = document.getElementById('formGue');
+  const btn = document.getElementById('tombol');
+  const msg = document.getElementById('pesan');
+
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbxA_vGc1qmJlx33c3YLA2ikqfqNtgETSW2_rzhgn_jruyxhexywhQC6WEsowlIqII1a/exec';
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    btn.disabled = true;
+    btn.innerText = "Sedang Mengirim...";
+    msg.innerText = "";
+    
+    fetch(scriptURL, { 
+      method: 'POST', 
+      body: new FormData(form)
+    })
+    .then(response => {
+      msg.innerText = "✅ Berhasil! Data terkirim.";
+      msg.style.color = "green";
+      form.reset();
+    })
+    .catch(error => {
+      msg.innerText = "❌ Gagal terkirim!";
+      msg.style.color = "red";
+      console.error('Error!', error.message);
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerText = "Kirim Presensi";
+    });
+  });
+</script>
+
+</body>
+</html>
