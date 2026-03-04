@@ -8,15 +8,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #ff4d4d;
-      --primary-hover: #ff1a1a;
+      --primary: #6366f1; 
+      --primary-hover: #4f46e5;
       --bg-body: #0f172a;
       --bg-box: #1e293b;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --input-bg: #334155;
       --border-color: #475569;
-      --status-red: #ef4444;
     }
 
     body { 
@@ -42,17 +41,8 @@
       z-index: 10;
     }
 
-    .box::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #800000, var(--primary));
-      border-radius: 20px 20px 0 0;
-    }
-
+    /* Judul dibuat putih semua tanpa span warna */
     h3 { color: var(--text-main); text-align: left; margin: 10px 0 8px; font-size: 1.5rem; font-weight: 800; }
-    h3 span { color: var(--primary); }
     .subtitle { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 30px; display: block; }
     
     label { font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 8px; }
@@ -62,13 +52,28 @@
       color: white; font-family: 'Poppins'; transition: all 0.3s ease;
     }
 
-    input:focus, select:focus { outline: none; border-color: var(--primary); background: #1e293b; box-shadow: 0 0 0 4px rgba(255, 77, 77, 0.2); }
+    input:focus, select:focus { outline: none; border-color: var(--primary); background: #1e293b; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); }
+    
     button { 
-      width: 100%; padding: 14px; background: #800000; color: white; border: none; 
+      width: 100%; padding: 14px; background: var(--primary); color: white; border: none; 
       border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 600; 
       margin-top: 10px; transition: all 0.3s ease; 
     }
     button:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+
+    #pesan { 
+      margin-top: 20px; 
+      font-weight: 600; 
+      text-align: center; 
+      font-size: 0.85rem; 
+      padding: 14px; 
+      border-radius: 12px; 
+      line-height: 1.4;
+      backdrop-filter: blur(8px); 
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      display: none;
+    }
 
     #m-screen {
       position: fixed; inset: 0; z-index: 9999; background: #020617;
@@ -84,10 +89,10 @@
       background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25);
     }
 
-    .dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--status-red); position: relative; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background-color: #ef4444; position: relative; }
     .dot::after {
       content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%;
-      background-color: var(--status-red); animation: live-pulse 2.5s infinite;
+      background-color: #ef4444; animation: live-pulse 2.5s infinite;
     }
 
     @keyframes live-pulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(4.5); opacity: 0; } }
@@ -95,31 +100,30 @@
     .m-title { 
       font-size: clamp(32px, 8vw, 64px); font-weight: 800; 
       letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 2rem;
-      color: var(--status-red);
+      color: #ef4444;
     }
 
     #m-text { font-size: clamp(16px, 4vw, 22px); color: #94a3b8; max-width: 650px; margin-bottom: 3rem; }
     .eta-box { padding-top: 2rem; border-top: 1px solid #1e293b; display: flex; flex-direction: column; gap: 8px; }
     #m-eta { color: white; font-weight: 700; font-size: 1.5rem; }
 
-    #pesan { margin-top: 20px; font-weight: 500; text-align: center; font-size: 0.9rem; padding: 12px; border-radius: 10px; line-height: 1.4; }
     input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   </style>
 </head>
 <body>
 
 <div id="main-app" class="box">
-  <h3>E-Absensi <span>X4J</span></h3>
+  <h3>E-Absensi X4J Arsikom</h3>
   <div id="kontenAbsen">
     <span class="subtitle">Silakan isi data kehadiran Anda di bawah ini.</span>
     <form id="formGue">
       <div style="margin-bottom: 20px;">
         <label>Nama Lengkap</label>
-        <input type="text" name="konten" placeholder="Nama sesuai KTM" required>
+        <input type="text" name="konten" placeholder="Isi Nama Anda" required>
       </div>
       <div style="margin-bottom: 20px;">
         <label>NPM</label>
-        <input type="number" name="npm" placeholder="Contoh: 20224350123" required inputmode="numeric">
+        <input type="number" name="npm" placeholder="Isi NPM Anda" required inputmode="numeric">
       </div>
       <div style="margin-bottom: 20px;">
         <label>Status</label>
@@ -134,7 +138,7 @@
       <button type="submit" id="tombol">Kirim Presensi</button>
     </form>
   </div>
-  <div id="pesan" style="display: none;"></div>
+  <div id="pesan"></div>
 </div>
 
 <div id="m-screen">
@@ -163,8 +167,7 @@
   const teksHari = document.getElementById('namaHari');
   const mEta = document.getElementById('m-eta');
 
-  // --- MODE TESTER (Set ke false jika sudah selesai testing) ---
-  const modeTester = true; 
+  const modeTester = false; 
 
   function cekWaktu() {
     if (modeTester) {
@@ -239,27 +242,28 @@
     msg.style.display = "none";
     
     fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-    .then(response => response.text()) // Baca teks balasan dari server
+    .then(response => response.text()) 
     .then(hasil => {
       msg.style.display = "block";
       
       if (hasil.includes("Berhasil")) {
-        msg.style.background = "rgba(34, 197, 94, 0.2)";
-        msg.style.color = "#4ade80";
+        msg.style.background = "rgba(16, 185, 129, 0.15)"; 
+        msg.style.color = "#34d399";
+        msg.style.border = "1px solid rgba(16, 185, 129, 0.3)";
         msg.innerText = "✅ Presensi berhasil dikirim!";
         form.reset();
       } else {
-        // Tampilkan pesan penolakan dari Google Apps Script
-        msg.style.background = "rgba(239, 68, 68, 0.2)";
-        msg.style.color = "#f87171";
+        msg.style.background = "rgba(244, 63, 94, 0.15)"; 
+        msg.style.color = "#fb7185";
+        msg.style.border = "1px solid rgba(244, 63, 94, 0.3)";
         msg.innerText = "⚠️ " + hasil;
       }
     })
     .catch(() => {
       msg.style.display = "block";
-      msg.style.background = "rgba(239, 68, 68, 0.2)";
-      msg.style.color = "#f87171";
-      msg.innerText = "❌ Terjadi kesalahan koneksi!";
+      msg.style.background = "rgba(244, 63, 94, 0.15)"; 
+      msg.style.color = "#fb7185";
+      msg.innerText = "❌ Kesalahan koneksi!";
     })
     .finally(() => {
       btn.disabled = false;
