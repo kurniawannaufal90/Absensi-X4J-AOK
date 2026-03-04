@@ -12,7 +12,7 @@
       --primary-hover: #4f46e5;
       --bg-body: #0f172a;
       --bg-box: #1e293b;
-      --text-main: #f8fafc;
+      --white-pure: #ffffff; 
       --text-muted: #94a3b8;
       --input-bg: #334155;
       --border-color: #475569;
@@ -25,7 +25,7 @@
       background: var(--bg-body);
       background-image: radial-gradient(circle at top right, #1e1b4b, #0f172a);
       padding: 20px; 
-      color: var(--text-main);
+      color: var(--white-pure);
       overflow-x: hidden;
     }
 
@@ -41,9 +41,20 @@
       z-index: 10;
     }
 
-    /* Judul dibuat putih semua tanpa span warna */
-    h3 { color: var(--text-main); text-align: left; margin: 10px 0 8px; font-size: 1.5rem; font-weight: 800; }
-    .subtitle { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 30px; display: block; }
+    h3 { color: var(--white-pure); text-align: left; margin: 10px 0 2px; font-size: 1.5rem; font-weight: 800; }
+    
+    /* Info Waktu Putih Netral Murni */
+    .datetime-info { 
+      color: var(--white-pure); 
+      font-size: 0.75rem; 
+      font-weight: 600; 
+      margin-bottom: 25px; 
+      display: block; 
+      letter-spacing: 0.05em; 
+      opacity: 1; 
+    }
+    
+    .subtitle { color: var(--white-pure); font-size: 0.85rem; margin-bottom: 30px; display: block; }
     
     label { font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 8px; }
     input, select { 
@@ -80,13 +91,12 @@
       display: flex; align-items: center; justify-content: center;
       padding: 24px; visibility: hidden; opacity: 0; transition: opacity 0.4s ease-out;
     }
-
     #m-screen.show { visibility: visible; opacity: 1; }
 
     .status-pill {
       display: inline-flex; align-items: center; gap: 12px;
       padding: 10px 22px; border-radius: 9999px; margin-bottom: 2.5rem;
-      background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25);
+      background-color: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4);
     }
 
     .dot { width: 8px; height: 8px; border-radius: 50%; background-color: #ef4444; position: relative; }
@@ -97,14 +107,12 @@
 
     @keyframes live-pulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(4.5); opacity: 0; } }
 
-    .m-title { 
-      font-size: clamp(32px, 8vw, 64px); font-weight: 800; 
-      letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 2rem;
-      color: #ef4444;
-    }
-
+    .m-title { font-size: clamp(32px, 8vw, 64px); font-weight: 800; color: #ef4444; margin-bottom: 2rem; line-height: 0.9; }
+    
+    /* Jam Digital Layar Kunci */
+    .m-datetime { color: var(--white-pure); font-size: 1rem; font-weight: 600; margin-bottom: 2rem; display: block; }
+    
     #m-text { font-size: clamp(16px, 4vw, 22px); color: #94a3b8; max-width: 650px; margin-bottom: 3rem; }
-    .eta-box { padding-top: 2rem; border-top: 1px solid #1e293b; display: flex; flex-direction: column; gap: 8px; }
     #m-eta { color: white; font-weight: 700; font-size: 1.5rem; }
 
     input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -114,6 +122,8 @@
 
 <div id="main-app" class="box">
   <h3>E-Absensi X4J Arsikom</h3>
+  <span id="display-time" class="datetime-info">Memuat Waktu...</span>
+  
   <div id="kontenAbsen">
     <span class="subtitle">Silakan isi data kehadiran Anda di bawah ini.</span>
     <form id="formGue">
@@ -148,13 +158,13 @@
       <span style="color: #ef4444; font-weight: 800; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;">System Locked</span>
     </div>
     <h1 class="m-title">Presensi Telah<br>Berakhir.</h1>
+    
+    <span id="m-display-time" class="m-datetime">Memuat Waktu...</span>
+
     <p id="m-text">
       Maaf, batas waktu absensi hari <span id="namaHari" style="color: white; font-weight: 800;">...</span> jam 10.00 WIB sudah terlewati.
     </p>
-    <div class="eta-box">
-      <span style="color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3em; font-weight: 800;">Dibuka Kembali</span>
-      <span id="m-eta">Memuat Jadwal...</span>
-    </div>
+    <div id="m-eta">Memuat Jadwal...</div>
   </div>
 </div>
 
@@ -166,10 +176,34 @@
   const msg = document.getElementById('pesan');
   const teksHari = document.getElementById('namaHari');
   const mEta = document.getElementById('m-eta');
+  const displayTime = document.getElementById('display-time');
+  const mDisplayTime = document.getElementById('m-display-time');
 
-  const modeTester = false; 
+  const modeTester = false; // Set ke false untuk real-time
+
+  function updateClock() {
+    const sekarang = new Date();
+    const listHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
+    const listBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    
+    const hari = listHari[sekarang.getDay()];
+    const tgl = sekarang.getDate().toString().padStart(2, '0');
+    const bulan = listBulan[sekarang.getMonth()];
+    const tahun = sekarang.getFullYear();
+    const jam = sekarang.getHours().toString().padStart(2, '0');
+    const menit = sekarang.getMinutes().toString().padStart(2, '0');
+    const detik = sekarang.getSeconds().toString().padStart(2, '0');
+
+    const fullTimeStr = `${hari}, ${tgl} ${bulan} ${tahun} • ${jam}:${menit}:${detik} WIB`;
+    
+    // Update jam di kedua layar
+    displayTime.innerText = fullTimeStr;
+    mDisplayTime.innerText = fullTimeStr;
+  }
 
   function cekWaktu() {
+    updateClock(); 
+
     if (modeTester) {
       if (mScreen.classList.contains('show')) {
         mScreen.classList.remove('show');
@@ -200,18 +234,18 @@
     const isOperationalTime = (totalMenitSekarang >= menitBuka && totalMenitSekarang < menitTutup);
 
     if (!isJadwalHariIni || !isOperationalTime) {
-        const listHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-        teksHari.innerText = listHari[hari];
+        const listHariSimple = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
+        teksHari.innerText = listHariSimple[hari];
 
         if (hari >= 1 && hari <= 5) {
-          mEta.innerText = "Sabtu Pagi, Jam 07.30 WIB";
+          mEta.innerText = "Dibuka: Sabtu Pagi, Jam 07.30 WIB";
         } else if (hari === 6) {
           const besok = new Date(sekarang);
           besok.setDate(sekarang.getDate() + 1);
           const tglBesok = besok.toISOString().split('T')[0];
-          mEta.innerText = jadwalMingguMei.includes(tglBesok) ? "Minggu Pagi, Jam 07.30 WIB" : "Sabtu Pagi, Jam 07.30 WIB";
+          mEta.innerText = jadwalMingguMei.includes(tglBesok) ? "Dibuka: Minggu Pagi, Jam 07.30 WIB" : "Dibuka: Sabtu Pagi, Jam 07.30 WIB";
         } else {
-          mEta.innerText = "Sabtu Pagi, Jam 07.30 WIB";
+          mEta.innerText = "Dibuka: Sabtu Pagi, Jam 07.30 WIB";
         }
 
         if (!mScreen.classList.contains('show')) {
@@ -228,11 +262,10 @@
     return true;
   }
 
-  function loop() { cekWaktu(); requestAnimationFrame(loop); }
   setInterval(cekWaktu, 1000); 
-  loop(); 
+  cekWaktu(); 
 
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbzcg0MQZCeSbY1MuWvxLbqz3xrYOS1VZrRecVVZAJkAFTRag3F6gnbepyIm7F32w7OI/exec';
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbyULoBaE-MecImsjqEleuTrfMpTCPceIJNBaCcsl6ws7ksH3jumL5xESbG1tNCI_4n-/exec';
 
   form.addEventListener('submit', e => {
     e.preventDefault();
@@ -245,7 +278,6 @@
     .then(response => response.text()) 
     .then(hasil => {
       msg.style.display = "block";
-      
       if (hasil.includes("Berhasil")) {
         msg.style.background = "rgba(16, 185, 129, 0.15)"; 
         msg.style.color = "#34d399";
